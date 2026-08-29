@@ -1,0 +1,45 @@
+#version 450
+
+// External force term `f` of the Navier-Stokes momentum equation
+//     du/dt = -(u·∇)u - (1/ρ)∇p + ν∇²u + f
+// Injects a Gaussian impulse into the velocity field (mode 0) and dye into the
+// color field (mode 1) at a point given in unit-square coordinates (x right,
+// y down, matching the window).
+
+layout(local_size_x = 8, local_size_y = 8) in;
+
+layout(set = 0, binding = 0, rg32f) uniform image2D velocity;
+layout(set = 0, binding = 1, rgba32f) uniform image2D dye;
+
+layout(push_constant) uniform Push {
+    vec2 point;    // uv in [0, 1]
+    vec2 impulse;  // velocity delta, in cells per second
+    vec4 color;    // dye amount to add
+    float radius;  // Gaussian radius, in uv units
+    int mode;      // 0 = velocity splat, 1 = dye splat
+} push;
+
+void main() {
+    ivec2 pos = ivec2(gl_GlobalInvocationID.xy);
+    if (push.mode == 0) {
+        ivec2 n = imageSize(velocity);
+        if (pos.x >= n.x || pos.y >= n.y) {
+            return;
+        }
+        vec2 uv = (vec2(pos) + 0.5) / vec2(n);
+        vec2 d = uv - push.point;
+        float g = exp(-dot(d, d) / (push.radius * push.radius));
+        vec2 v = imageLoad(velocity, pos).xy + push.impulse * g;
+        imageStore(velocity, pos, vec4(v, 0.0, 0.0));
+    } else {
+        ivec2 n = imageSize(dye);
+        if (pos.x >= n.x || pos.y >= n.y) {
+            return;
+        }
+        vec2 uv = (vec2(pos) + 0.5) / vec2(n);
+        vec2 d = uv - push.point;
+        float g = exp(-dot(d, d) / (push.radius * push.radius));
+        vec4 c = imageLoad(dye, pos) + push.color * g;
+        imageStore(dye, pos, c);
+    }
+}

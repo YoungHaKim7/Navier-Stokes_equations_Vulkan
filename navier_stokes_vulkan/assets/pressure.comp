@@ -1,0 +1,30 @@
+#version 450
+
+// Pressure Poisson solve `∇²p = ∇·u` (with ρ = 1 and dt absorbed), the second
+// half of the incompressibility constraint. Jacobi iteration
+//     p_{k+1} = (pL + pR + pB + pT - div) / 4
+// with clamped edge sampling, which is the homogeneous Neumann condition
+// ∂p/∂n = 0 at the walls. The ping-pong images persist between frames, so each
+// frame warm-starts from the previous pressure field.
+
+layout(local_size_x = 8, local_size_y = 8) in;
+
+layout(set = 0, binding = 0, r32f) uniform readonly image2D pressure_in;
+layout(set = 0, binding = 1, r32f) uniform writeonly image2D pressure_out;
+layout(set = 0, binding = 2, r32f) uniform readonly image2D divergence;
+
+void main() {
+    ivec2 pos = ivec2(gl_GlobalInvocationID.xy);
+    ivec2 n = imageSize(pressure_in);
+    if (pos.x >= n.x || pos.y >= n.y) {
+        return;
+    }
+    ivec2 e = clamp(pos + ivec2(1, 0), ivec2(0), n - 1);
+    ivec2 w = clamp(pos - ivec2(1, 0), ivec2(0), n - 1);
+    ivec2 t = clamp(pos + ivec2(0, 1), ivec2(0), n - 1);
+    ivec2 b = clamp(pos - ivec2(0, 1), ivec2(0), n - 1);
+    float sum = imageLoad(pressure_in, e).x + imageLoad(pressure_in, w).x
+              + imageLoad(pressure_in, t).x + imageLoad(pressure_in, b).x;
+    float p = (sum - imageLoad(divergence, pos).x) * 0.25;
+    imageStore(pressure_out, pos, vec4(p, 0.0, 0.0, 0.0));
+}

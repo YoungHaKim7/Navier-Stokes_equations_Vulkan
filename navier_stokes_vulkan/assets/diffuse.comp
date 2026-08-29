@@ -1,0 +1,34 @@
+#version 450
+
+// Viscosity term `ν∇²u` of the Navier-Stokes momentum equation. Implicit
+// Euler gives (I - ν·dt·∇²) u_new = u_old, solved here with a few Jacobi
+// iterations
+//     x_{k+1} = (u_old + a·(xL + xR + xB + xT)) / (1 + 4a),  a = ν·dt
+// on a unit-spaced grid. `u_old` stays fixed across iterations; the running
+// iterate ping-pongs between two scratch images.
+
+layout(local_size_x = 8, local_size_y = 8) in;
+
+layout(set = 0, binding = 0, rg32f) uniform readonly image2D u_old;
+layout(set = 0, binding = 1, rg32f) uniform readonly image2D x_in;
+layout(set = 0, binding = 2, rg32f) uniform writeonly image2D x_out;
+
+layout(push_constant) uniform Push {
+    float alpha; // a = ν·dt
+} push;
+
+void main() {
+    ivec2 pos = ivec2(gl_GlobalInvocationID.xy);
+    ivec2 n = imageSize(u_old);
+    if (pos.x >= n.x || pos.y >= n.y) {
+        return;
+    }
+    ivec2 e = clamp(pos + ivec2(1, 0), ivec2(0), n - 1);
+    ivec2 w = clamp(pos - ivec2(1, 0), ivec2(0), n - 1);
+    ivec2 t = clamp(pos + ivec2(0, 1), ivec2(0), n - 1);
+    ivec2 b = clamp(pos - ivec2(0, 1), ivec2(0), n - 1);
+    vec2 sum = imageLoad(x_in, e).xy + imageLoad(x_in, w).xy
+             + imageLoad(x_in, t).xy + imageLoad(x_in, b).xy;
+    vec2 result = (imageLoad(u_old, pos).xy + push.alpha * sum) / (1.0 + 4.0 * push.alpha);
+    imageStore(x_out, pos, vec4(result, 0.0, 0.0));
+}

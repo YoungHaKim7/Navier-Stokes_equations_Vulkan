@@ -1,0 +1,30 @@
+#version 450
+
+// Divergence `∇·u` of the velocity field, the right-hand side of the pressure
+// Poisson equation that enforces the incompressibility constraint
+//     ∇·u = 0
+// of the Navier-Stokes system. Central differences on the unit grid; the
+// free-slip walls (zero normal velocity on border cells) make the clamped
+// outer samples correct.
+
+layout(local_size_x = 8, local_size_y = 8) in;
+
+layout(set = 0, binding = 0, rg32f) uniform readonly image2D velocity;
+layout(set = 0, binding = 1, r32f) uniform writeonly image2D divergence;
+
+void main() {
+    ivec2 pos = ivec2(gl_GlobalInvocationID.xy);
+    ivec2 n = imageSize(velocity);
+    if (pos.x >= n.x || pos.y >= n.y) {
+        return;
+    }
+    ivec2 e = clamp(pos + ivec2(1, 0), ivec2(0), n - 1);
+    ivec2 w = clamp(pos - ivec2(1, 0), ivec2(0), n - 1);
+    ivec2 t = clamp(pos + ivec2(0, 1), ivec2(0), n - 1);
+    ivec2 b = clamp(pos - ivec2(0, 1), ivec2(0), n - 1);
+    float div = 0.5 * (
+        imageLoad(velocity, e).x - imageLoad(velocity, w).x
+        + imageLoad(velocity, t).y - imageLoad(velocity, b).y
+    );
+    imageStore(divergence, pos, vec4(div, 0.0, 0.0, 0.0));
+}

@@ -1,0 +1,88 @@
+#version 450
+
+// Advection term `(u·∇)u` of the Navier-Stokes momentum equation, solved with
+// the unconditionally stable semi-Lagrangian scheme of Stam's "Stable Fluids":
+// each cell looks up the field value where its content came from one dt ago.
+//
+// mode 0 advects the velocity field itself (all stencils in sim-grid cells,
+// velocity in cells per second); mode 1 advects the dye field, rescaling the
+// velocity because dye lives on a finer grid. Both apply a dissipation factor
+// 1 / (1 + dt·dissipation) that keeps the fields from saturating.
+//
+// The bilinear lookups are written out per image: GLSL image function
+// parameters cannot carry a format qualifier, so a shared helper cannot
+// accept images of different formats.
+
+layout(local_size_x = 8, local_size_y = 8) in;
+
+layout(set = 0, binding = 0, rg32f) uniform readonly image2D velocity_in;
+layout(set = 0, binding = 1, rg32f) uniform writeonly image2D velocity_out;
+layout(set = 0, binding = 2, rgba32f) uniform readonly image2D dye_in;
+layout(set = 0, binding = 3, rgba32f) uniform writeonly image2D dye_out;
+
+layout(push_constant) uniform Push {
+    float dt;
+    float dissipation;
+    int mode;
+} push;
+
+void main() {
+    ivec2 pos = ivec2(gl_GlobalInvocationID.xy);
+    float decay = 1.0 / (1.0 + push.dt * push.dissipation);
+
+    if (push.mode == 0) {
+        ivec2 n = imageSize(velocity_in);
+        if (pos.x >= n.x || pos.y >= n.y) {
+            return;
+        }
+        vec2 v = imageLoad(velocity_in, pos).xy;
+        vec2 src = clamp(vec2(pos) - push.dt * v, vec2(0.0), vec2(n) - 1.0);
+        vec2 p0 = floor(src);
+        vec2 f = src - p0;
+        ivec2 c0 = ivec2(p0);
+        ivec2 c1 = min(c0 + ivec2(1), n - 1);
+        vec2 a = imageLoad(velocity_in, c0).xy;
+        vec2 b = imageLoad(velocity_in, ivec2(c1.x, c0.y)).xy;
+        vec2 c = imageLoad(velocity_in, ivec2(c0.x, c1.y)).xy;
+        vec2 d = imageLoad(velocity_in, c1).xy;
+        vec2 result = mix(mix(a, b, f.x), mix(c, d, f.x), f.y) * decay;
+        // Free-slip walls: no flow through the domain border.
+        if (pos.x == 0 || pos.x == n.x - 1) {
+            result.x = 0.0;
+        }
+        if (pos.y == 0 || pos.y == n.y - 1) {
+            result.y = 0.0;
+        }
+        imageStore(velocity_out, pos, vec4(result, 0.0, 0.0));
+    } else {
+        ivec2 n = imageSize(dye_in);
+        if (pos.x >= n.x || pos.y >= n.y) {
+            return;
+        }
+        // Velocity is stored in sim cells per second; rescale to dye cells and
+        // bilinearly sample it at this dye cell's position.
+        vec2 sim_n = vec2(imageSize(velocity_in));
+        vec2 scale = vec2(n) / sim_n;
+        vec2 vp = clamp(vec2(pos) / scale, vec2(0.0), sim_n - 1.0);
+        vec2 vp0 = floor(vp);
+        vec2 vf = vp - vp0;
+        ivec2 vc0 = ivec2(vp0);
+        ivec2 vc1 = min(vc0 + ivec2(1), ivec2(sim_n) - 1);
+        vec2 va = imageLoad(velocity_in, vc0).xy;
+        vec2 vb = imageLoad(velocity_in, ivec2(vc1.x, vc0.y)).xy;
+        vec2 vcc = imageLoad(velocity_in, ivec2(vc0.x, vc1.y)).xy;
+        vec2 vd = imageLoad(velocity_in, vc1).xy;
+        vec2 v = mix(mix(va, vb, vf.x), mix(vcc, vd, vf.x), vf.y) * scale;
+
+        vec2 src = clamp(vec2(pos) - push.dt * v, vec2(0.0), vec2(n) - 1.0);
+        vec2 p0 = floor(src);
+        vec2 f = src - p0;
+        ivec2 c0 = ivec2(p0);
+        ivec2 c1 = min(c0 + ivec2(1), n - 1);
+        vec4 a = imageLoad(dye_in, c0);
+        vec4 b = imageLoad(dye_in, ivec2(c1.x, c0.y));
+        vec4 c = imageLoad(dye_in, ivec2(c0.x, c1.y));
+        vec4 d = imageLoad(dye_in, c1);
+        imageStore(dye_out, pos, mix(mix(a, b, f.x), mix(c, d, f.x), f.y) * decay);
+    }
+}

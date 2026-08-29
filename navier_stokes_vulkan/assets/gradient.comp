@@ -1,0 +1,36 @@
+#version 450
+
+// Pressure gradient term `-(1/ρ)∇p` (ρ = 1): subtracting the gradient of the
+// freshly solved pressure projects the velocity back onto the space of
+// divergence-free (incompressible) fields. Central differences on the unit
+// grid, then the free-slip wall condition is re-imposed on the border cells.
+
+layout(local_size_x = 8, local_size_y = 8) in;
+
+layout(set = 0, binding = 0, rg32f) uniform readonly image2D velocity_in;
+layout(set = 0, binding = 1, rg32f) uniform writeonly image2D velocity_out;
+layout(set = 0, binding = 2, r32f) uniform readonly image2D pressure;
+
+void main() {
+    ivec2 pos = ivec2(gl_GlobalInvocationID.xy);
+    ivec2 n = imageSize(velocity_in);
+    if (pos.x >= n.x || pos.y >= n.y) {
+        return;
+    }
+    ivec2 e = clamp(pos + ivec2(1, 0), ivec2(0), n - 1);
+    ivec2 w = clamp(pos - ivec2(1, 0), ivec2(0), n - 1);
+    ivec2 t = clamp(pos + ivec2(0, 1), ivec2(0), n - 1);
+    ivec2 b = clamp(pos - ivec2(0, 1), ivec2(0), n - 1);
+    vec2 grad_p = 0.5 * vec2(
+        imageLoad(pressure, e).x - imageLoad(pressure, w).x,
+        imageLoad(pressure, t).x - imageLoad(pressure, b).x
+    );
+    vec2 v = imageLoad(velocity_in, pos).xy - grad_p;
+    if (pos.x == 0 || pos.x == n.x - 1) {
+        v.x = 0.0;
+    }
+    if (pos.y == 0 || pos.y == n.y - 1) {
+        v.y = 0.0;
+    }
+    imageStore(velocity_out, pos, vec4(v, 0.0, 0.0));
+}
