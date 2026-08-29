@@ -23,6 +23,8 @@ $$
 \mu\frac{\partial^2 u_i}{\partial x_j \partial x_j} 
 $$
 
+- 맨 앞에 P와 닮은 그리스 문자 (로) 는 밀도를 말한다.
+
 - P = 압력
   - 압력(P) 이 유체의 속도(u) 를 좌우한다.
 
