@@ -6,6 +6,10 @@
 
 The **Navier–Stokes (NS) equations** describe the motion of fluids such as water, air, and gases. They express **Newton's second law applied to a fluid**.
 
+[공식 9분16초에 나온다.](https://youtu.be/egfRLw2yzng?si=rO9AS-sfR9Aue680)
+
+
+
 ## 1. General Navier–Stokes equation
 
 For a Newtonian fluid, one common form is:
