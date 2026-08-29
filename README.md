@@ -11,17 +11,7 @@ The **Navier–Stokes (NS) equations** describe the motion of fluids such as wat
 - [공식 9분16초에 나온다.](https://youtu.be/egfRLw2yzng?si=rO9AS-sfR9Aue680)
 
 
-$$
-\rho\left(
-    \frac{\partial u_i}{\partial t}
-    +
-    u_j \frac{\partial u_i}{\partial x_j}
-\right)
-=
--\frac{\partial p}{\partial x_i}
-+
-\mu\frac{\partial^2 u_i}{\partial x_j \partial x_j} 
-$$
+$$ \rho\left( \frac{\partial u_i}{\partial t} + u_j \frac{\partial u_i}{\partial x_j} \right) = -\frac{\partial p}{\partial x_i} + \mu\frac{\partial^2 u_i}{\partial x_j \partial x_j}  $$
 
 - 맨 앞에 P와 닮은 그리스 문자 (로) 는 밀도를 말한다.
 
@@ -33,7 +23,7 @@ $$
  \partial u_j
 $$ 
 
-- 속도(속도를 나타내는 표현들)
+- 속도(속도를 나타내는 표현들)(ui, uj 등등)
 
 # 1. Partial Differential / Particle Symbol (∂)
 - This is the most common symbol requested under this phonetic spelling.
@@ -45,13 +35,13 @@ $$
 
 # 주요 그리스 문자 유니코드
 
-- Alpha (알파): 대문자 U+0391 (A), 소문자 U+03B1 (α)
-- Beta (베타): 대문자 U+0392 (B), 소문자 U+03B2 (β)
-- Gamma (감마): 대문자 U+0393 (Γ), 소문자 U+03B3 (γ)
-- Delta (델타): 대문자 U+0394 (Δ), 소문자 U+03B4 (δ)
-- Pi (파이/피): 대문자 U+03A0 (Π), 소문자 U+03C0 (π)
-- Rho (로): 대문자 U+03A1 (Ρ), 소문자 U+03C1 (ρ)
-- Phi (피/파이): 대문자 U+03A6 (Φ), 소문자 U+03C6
+- Alpha (알파): 대문자 `U+0391` (`A`), 소문자 `U+03B1` (`α`)
+- Beta (베타): 대문자 `U+0392` (`B`), 소문자 `U+03B2` (`β`)
+- Gamma (감마): 대문자 `U+0393` (`Γ`), 소문자 `U+03B3` (`γ`)
+- Delta (델타): 대문자 `U+0394` (`Δ`), 소문자 `U+03B4` (`δ`)
+- Pi (파이/피): 대문자 `U+03A0` (`Π`), 소문자 `U+03C0` (`π`)
+- Rho (로): 대문자 `U+03A1` (`Ρ`), 소문자 `U+03C1` (`ρ`)
+- Phi (피/파이): 대문자 `U+03A6` (`Φ`), 소문자 `U+03C6` (`φ`)
 
 - https://ko.wiktionary.org/wiki/%EB%B6%84%EB%A5%98:%EC%9C%A0%EB%8B%88%EC%BD%94%EB%93%9C_Greek_and_Coptic 
 
