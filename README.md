@@ -10,20 +10,7 @@ The **Navier–Stokes (NS) equations** describe the motion of fluids such as wat
 
 For a Newtonian fluid, one common form is:
 
-$$
-\rho
-\left(
-\frac{\partial \mathbf{u}}{\partial t}
-+
-(\mathbf{u}\cdot\nabla)\mathbf{u}
-\right)
-=
--\nabla p
-+
-\mu\nabla^2\mathbf{u}
-+
-\mathbf{f}
-$$
+$$\rho\left(\frac{\partial \mathbf{u}}{\partial t}+(\mathbf{u}\cdot\nabla)\mathbf{u}\right)=-\nabla p+\mu\nabla^2\mathbf{u}+\mathbf{f}$$
 
 ### Meaning of the symbols
 
@@ -44,19 +31,7 @@ $$
 
 For an **incompressible fluid** with constant density, the equations are usually written as:
 
-$$
-\boxed{
-\frac{\partial \mathbf{u}}{\partial t}
-+
-(\mathbf{u}\cdot\nabla)\mathbf{u}
-=
--\frac{1}{\rho}\nabla p
-+
-\nu\nabla^2\mathbf{u}
-+
-\mathbf{g}
-}
-$$
+$$\boxed{\frac{\partial \mathbf{u}}{\partial t}+(\mathbf{u}\cdot\nabla)\mathbf{u}=-\frac{1}{\rho}\nabla p+\nu\nabla^2\mathbf{u}+\mathbf{g}}$$
 
 together with the **incompressibility condition**:
 
@@ -78,27 +53,7 @@ is the **kinematic viscosity**.
 
 ## 3. What each term physically means
 
-$$
-\underbrace{
-\frac{\partial \mathbf{u}}{\partial t}
-}_{\text{Change over time}}
-+
-\underbrace{
-(\mathbf{u}\cdot\nabla)\mathbf{u}
-}_{\text{Fluid carries itself}}
-=
-\underbrace{
--\frac{1}{\rho}\nabla p
-}_{\text{Pressure force}}
-+
-\underbrace{
-\nu\nabla^2\mathbf{u}
-}_{\text{Viscosity}}
-+
-\underbrace{
-\mathbf{g}
-}_{\text{External forces}}
-$$
+$$\underbrace{\frac{\partial \mathbf{u}}{\partial t}}_{\text{Change over time}}+\underbrace{(\mathbf{u}\cdot\nabla)\mathbf{u}}_{\text{Fluid carries itself}}=\underbrace{-\frac{1}{\rho}\nabla p}_{\text{Pressure force}}+\underbrace{\nu\nabla^2\mathbf{u}}_{\text{Viscosity}}+\underbrace{\mathbf{g}}_{\text{External forces}}$$
 
 The famous nonlinear term is:
 
@@ -120,15 +75,7 @@ $$
 
 then the \(x\)-component, for example, is:
 
-$$
-\frac{\partial u}{\partial t}
-+
-u\frac{\partial u}{\partial x}
-+
-v\frac{\partial u}{\partial y}
-+
-w\frac{\partial u}{\partial z}
-=
+$$\frac{\partial u}{\partial t}+u\frac{\partial u}{\partial x}+v\frac{\partial u}{\partial y}+w\frac{\partial u}{\partial z}=
 -\frac{1}{\rho}\frac{\partial p}{\partial x}
 +
 \nu
