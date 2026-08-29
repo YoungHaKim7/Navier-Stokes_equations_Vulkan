@@ -100,7 +100,7 @@ There are similar equations for the \(y\)- and \(z\)-components.
 
 The Navier–Stokes equations are especially important in **aerodynamics, weather simulation, ocean modeling, computer graphics, CFD, and engineering**.
 
-If you'd like, I can next explain the Navier–Stokes equation **line by line**, including exactly what operators such as \(\nabla\), \(\nabla\cdot\), and \(\nabla^2\) mean with simple examples.
+If you'd like, I can next explain the Navier–Stokes equation **line by line**, including exactly what operators such as ($$\nabla$$), ($$\nabla\cdot\$$), and ($$\nabla^2\$$) mean with simple examples.
 
 
 
