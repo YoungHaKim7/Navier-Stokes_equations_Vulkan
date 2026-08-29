@@ -6,8 +6,36 @@
 
 The **Navier–Stokes (NS) equations** describe the motion of fluids such as water, air, and gases. They express **Newton's second law applied to a fluid**.
 
-[공식 9분16초에 나온다.](https://youtu.be/egfRLw2yzng?si=rO9AS-sfR9Aue680)
+# 유튜브에 나온 공식들.
 
+- [공식 9분16초에 나온다.](https://youtu.be/egfRLw2yzng?si=rO9AS-sfR9Aue680)
+
+
+$$
+\rho\left(
+    \frac{\partial u_i}{\partial t}
+    +
+    u_j \frac{\partial u_i}{\partial x_j}
+\right)
+=
+-\frac{\partial p}{\partial x_i}
++
+\mu\frac{\partial^2 u_i}{\partial x_j \partial x_j} 
+$$
+
+- P = 압력
+  - 압력(P) 이 유체의 속도(u) 를 좌우한다.
+
+$$
+ \partial u_i
+ \partial u_j
+$$ 
+
+- 속도(속도를 나타내는 표현들)
+
+
+
+<hr />
 
 
 ## 1. General Navier–Stokes equation
