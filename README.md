@@ -25,6 +25,17 @@ $$
 
 - 속도(속도를 나타내는 표현들)(ui, uj 등등)
 
+- 핵심 개념 3가지
+```txt
+1. 밀도(로우 ρ)
+2. 점성(뮤 u)
+3. 압력(P)
+```
+
+- 미는 힘
+  - 압력(P)이 유체의 속도(u)를 좌우한다.
+- 
+
 # 1. Partial Differential / Particle Symbol (∂)
 - This is the most common symbol requested under this phonetic spelling.
   - Unicode: `U+2202`
