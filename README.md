@@ -8,7 +8,7 @@ The **Navier–Stokes (NS) equations** describe the motion of fluids such as wat
 
 # 유튜브에 나온 공식들.
 
-- [공식 9분16초에 나온다.](https://youtu.be/egfRLw2yzng?si=rO9AS-sfR9Aue680)
+- [공식 9분 12초에 나온다.](https://youtu.be/egfRLw2yzng?si=661b5rze8GtUYn1_&t=552)
 
 
 $$ \rho\left( \frac{\partial u_i}{\partial t} + u_j \frac{\partial u_i}{\partial x_j} \right) = -\frac{\partial p}{\partial x_i} + \mu\frac{\partial^2 u_i}{\partial x_j \partial x_j}  $$
@@ -57,16 +57,28 @@ $$\rho\left(\frac{\partial \mathbf{u}}{\partial t}+(\mathbf{u}\cdot\nabla)\mathb
 
 ### Meaning of the symbols
 
-| Symbol         | Meaning                        |
-| -------------- | ------------------------------ |
-| \(\rho\)       | Fluid density                  |
-| \(\mathbf{u}\) | Fluid velocity vector          |
-| \(t\)          | Time                           |
-| \(p\)          | Pressure                       |
-| \(\mu\)        | Dynamic viscosity              |
-| \(\mathbf{f}\) | External force per unit volume |
-| \(\nabla\)     | Gradient operator              |
-| \(\nabla^2\)   | Laplacian operator             |
+| Symbol         | uppercase/<br />lowercase   |Meaning                        |
+| -------------- | -|----------------------------- |
+| \(\rho\)       |`P`, `ρ`|Fluid density                  |
+| \(\mathbf{u}\) |`u` | Fluid velocity vector          |
+| \(t\)          | | Time                           |
+| \(p\)          |`p`| Pressure                       |
+| \(\mu\)        |`Μ`, `μ` | Dynamic viscosity              |
+| \(\mathbf{f}\) |`f`| External force per unit volume |
+| \(\nabla\)     |`∇` | Gradient operator              |
+| \(\nabla^2\)   |`∇^2` |Laplacian operator             |
+
+
+### How to Use `\mathbf`
+
+- Basic syntax: `$\mathbf{A}$` produces upright bold A.
+  - 기본 문법: `$\mathbf{A}$`는 세로로 된 굵은 A를 생성합니다. 
+
+- Multiple characters: `$\mathbf{v} = \mathbf{a} + \mathbf{b}$`
+
+$\mathbf{v} = \mathbf{a} + \mathbf{b}$
+
+- https://trybibby.com/learn/bold-math-symbols 
 
 ---
 
