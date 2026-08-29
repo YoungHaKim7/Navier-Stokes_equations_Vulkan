@@ -1,21 +1,21 @@
-完成。**`navier_stokes_vulkan/`** 现在是一个完整的、经过验证的 Navier–Stokes 流体模拟。我遵循了两个参考项目的架构（`Gpu` → `RenderContext` → winit `App`，`assets/` GLSL，push constants，相同的依赖/版本），但是在 **GPU 计算着色器** 上运行的求解器，而不是 CPU 模拟——因为 Jacobi 压力求解正是 Vulkan 计算所针对的大规模并行工作负载。
+Done. **`navier_stokes_vulkan/`** is now a complete, verified Navier–Stokes fluid simulation. I followed the architecture of the two reference projects (`Gpu` → `RenderContext` → winit `App`, `assets/` GLSL, push constants, same dependencies/versions), but with the solver running on **GPU compute shaders** instead of a CPU simulation — because the Jacobi pressure solve is exactly the kind of massively parallel workload Vulkan compute is meant for.
 
-**README 数学公式 → 计算通道（passes）的映射：**
+**Mapping from the README's math to compute passes:**
 
-| 项                        | 含义       | Kernel（内核）                                                         |
-| ------------------------- | ---------- | ---------------------------------------------------------------------- |
-| **f**                     | 外力       | `splat.comp` — 拖拽时注入高斯速度冲量 + 色相循环染料                   |
-| **ν∇²u**                  | 粘性       | `diffuse.comp` — $(I-\nu dt\nabla^2)u^{new}=u^{old}$ 的 Jacobi 迭代    |
-| **−(1/ρ)∇p**, **∇·u = 0** | 压力投影   | `divergence.comp` → `pressure.comp`（Jacobi，热启动）→ `gradient.comp` |
-| **(u·∇)u**                | 非线性对流 | `advect.comp` — Stam 的半拉格朗日回溯（速度 + 染料）                   |
+| Term                      | Meaning         | Kernel                                                                  |
+| ------------------------- | --------------- | ----------------------------------------------------------------------- |
+| **f**                     | External force  | `splat.comp` — injects a Gaussian velocity impulse + hue-cycling dye while dragging |
+| **ν∇²u**                  | Viscosity       | `diffuse.comp` — Jacobi iteration of $(I-\nu dt\nabla^2)u^{new}=u^{old}$ |
+| **−(1/ρ)∇p**, **∇·u = 0** | Pressure projection | `divergence.comp` → `pressure.comp` (Jacobi, warm-started) → `gradient.comp` |
+| **(u·∇)u**                | Nonlinear advection | `advect.comp` — Stam's semi-Lagrangian backtrace (velocity + dye)   |
 
-帧顺序：splat → diffuse → divergence → pressure ×N → gradient → advect velocity → advect dye，全部作为存储图像的乒乓调度（vulkano 自动插入屏障）。速度/压力网格为 410×256（正方形单元格，宽高比匹配），染料为 2 倍精细；通过全屏三角形 + 手动双线性 `imageLoad` 进行显示（不假设浮点纹理的硬件过滤）。
+Frame order: splat → diffuse → divergence → pressure ×N → gradient → advect velocity → advect dye, all scheduled as ping-pong dispatches over storage images (vulkano inserts the barriers automatically). The velocity/pressure grid is 410×256 (square cells, matching the aspect ratio), with dye at 2× the resolution; display goes through a fullscreen triangle + manual bilinear `imageLoad` (no reliance on hardware filtering of float textures).
 
-**在您的 RTX 3060 Ti 上进行的验证：**
-- `NS_CHECK=1`（仅计算，无显示） — **通过**：一次投影使拖拽大小源的发散度降低了 **84% (最大值) / 53% (平均值)**，120 个脚本步骤保持有限并输运染料，ν=2.0 时的粘性通道运行正常
-- `NS_DUMP_FRAME=/tmp/ns_frame.ppm` — 渲染的帧显示出带有色相循环染料的真实涡旋（已通过数值和 ASCII 渲染进行验证）
-- 窗口化应用运行正常，clippy 无警告提示
+**Verified on your RTX 3060 Ti:**
+- `NS_CHECK=1` (compute only, no display) — **passed**: a single projection reduces the divergence of a drag-sized source by **84% (max) / 53% (mean)**, 120 scripted steps stay finite and transport dye, and the viscosity pass behaves correctly at ν=2.0
+- `NS_DUMP_FRAME=/tmp/ns_frame.ppm` — the rendered frame shows real vortices carrying hue-cycling dye (verified numerically and via ASCII rendering)
+- The windowed app runs, and clippy reports no warnings
 
-**控制：** 拖拽 = 搅动 · 空格键 = 暂停 · ↑/↓ = 时间速度 · V/B = 粘性 ν · [ ] = 压力迭代次数 · R = 重置 · Esc 键 = 退出（在窗口标题栏中实时显示）。
+**Controls:** drag = stir · space = pause · ↑/↓ = time speed · V/B = viscosity ν · [ ] = pressure iterations · R = reset · Esc = quit (shown live in the window title).
 
-一个坦诚的注意事项：在默认迭代次数下，Jacobi 方法在处理*低频*发散时收敛较慢（这在所有实时流体演示中很常见）—— `[` `]` 键可以调节该精度。所有内容都在项目 README 中有记录。尚未提交任何内容；如果您需要，随时告诉我。
+One honest caveat: at the default iteration count, Jacobi converges slowly on *low-frequency* divergence (common to all real-time fluid demos) — the `[` `]` keys adjust that accuracy. Everything is documented in the project README. Nothing has been committed yet; just say the word if you'd like that.
