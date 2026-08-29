@@ -35,6 +35,25 @@ $$
 
 - 속도(속도를 나타내는 표현들)
 
+# 1. Partial Differential / Particle Symbol (∂)
+- This is the most common symbol requested under this phonetic spelling.
+  - Unicode: `U+2202`
+  - LaTeX: `\partial`
+- Here is the quick reference for the mathematical symbol used to denote a "partial" (often used in partial derivatives or particle physics notation), alongside a few other symbols frequently used in particle physics.
+
+- 여기에는 '부분'을 나타내는 수학 기호(부분 미분이나 입자 물리학 표기에서 자주 사용됨)와 입자 물리학에서 자주 쓰이는 몇 가지 다른 기호들을 간단히 정리한 참고 자료가 있습니다.
+
+# 주요 그리스 문자 유니코드
+
+- Alpha (알파): 대문자 U+0391 (A), 소문자 U+03B1 (α)
+- Beta (베타): 대문자 U+0392 (B), 소문자 U+03B2 (β)
+- Gamma (감마): 대문자 U+0393 (Γ), 소문자 U+03B3 (γ)
+- Delta (델타): 대문자 U+0394 (Δ), 소문자 U+03B4 (δ)
+- Pi (파이/피): 대문자 U+03A0 (Π), 소문자 U+03C0 (π)
+- Rho (로): 대문자 U+03A1 (Ρ), 소문자 U+03C1 (ρ)
+- Phi (피/파이): 대문자 U+03A6 (Φ), 소문자 U+03C6
+
+- https://ko.wiktionary.org/wiki/%EB%B6%84%EB%A5%98:%EC%9C%A0%EB%8B%88%EC%BD%94%EB%93%9C_Greek_and_Coptic 
 
 
 <hr />
