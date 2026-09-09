@@ -173,6 +173,7 @@ If you'd like, I can next explain the Navier–Stokes equation **line by line**,
 
 # 나비에 -스토크스 방정식 유튜브 영상
 - 유튜브 영상
+  - [260909) 90년 수학 난제 나비에-스토크스 방정식, OpenAI는 어떻게 답을 찾았나? | 안될과학 Unrealscience](https://youtu.be/C2W8k9ObcN4?si=irRfOLXuGdgxTWLd)
   - [260822유체의 움직임을 예측하는 공식 | 10kg 나무는 뜨는데 1kg 돌은 왜 가라앉을까? 아르키메데스, 뉴턴, 나비에-스토크스까지! 우리가 몰랐던 유체의 모든 것 (feat. 민태기 박사)_취미는 과학/98화 확장판- EBS 컬렉션 - 사이언스](https://youtu.be/egfRLw2yzng?si=CKFoSAVZC-XM3ivM)
 - 정의
   - [나무위키 NS Equation 정의 ](https://namu.wiki/w/%EB%82%98%EB%B9%84%EC%97%90-%EC%8A%A4%ED%86%A0%ED%81%AC%EC%8A%A4%20%EB%B0%A9%EC%A0%95%EC%8B%9D)
